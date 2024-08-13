@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Dashboard - Users{% endblock %}
+
+{% block additional_css %}
+<style>
+    /* Basic Popup Styles */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        z-index: 1000;
+    }
+    
+    /* Popup Overlay */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<h2>Dashboard</h2>
+<div>
+<div class="d-flex justify-content-between align-items-center">
+    <h4>All PDF</h4>
+    <input type="text" class="form-control w-25" placeholder="Search for users">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add PDF
+      </button>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.pdf|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.name|as_crispy_field }}
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div>
+
+<div class="card-body  tabcontent " id="active">
+    <div class="table-responsive" style="white-space: nowrap;">
+<table class="table table-responsive-md">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Read</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        {% for pdf in pdfs %}
+        <tr class="tableRow">
+        <td>{{pdf.id}}</td>
+        <td>{{pdf.name}}</td>
+        <td ><a href='{{pdf.pdf.url}}'  class="btn btn-primary">view</a></td>
+        <td><button type="button" class="btn btn-danger" onclick="deletepdf({{pdf.id}},this)">Delete</button></td>
+
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<script>
+    function deletepdf(id,i){
+        fetch('/delete-pdf/'+id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{csrf_token}}'
+            },}).then(response =>{
+            if (!response.ok) {
+                throw new Error("can't deleteuser: " + response);
+            }
+            i = i.parentNode.parentNode
+                i.style.display = 'none'
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Dashboard - Users{% endblock %}
+
+{% block additional_css %}
+<style>
+    /* Basic Popup Styles */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        z-index: 1000;
+    }
+    
+    /* Popup Overlay */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+<h2>Dashboard</h2>
+<div>
+<div class="d-flex justify-content-between align-items-center">
+    <h4>All users</h4>
+    <input type="text" class="form-control w-25" placeholder="Search for users">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add User
+      </button>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.username|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.email|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.sent_mails|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.is_active|as_crispy_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.activity_time|as_crispy_field }}
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div>
+
+<div class="card-body  tabcontent " id="active">
+    <div class="table-responsive" style="white-space: nowrap;">
+<table class="table table-responsive-md">
+    <thead>
+    <tr>
+        <th>Username</th>
+        <th>E-mail</th>
+        <th>Sent mails</th>
+        <th>Activity time</th>
+        <th>Activity state</th>
+        <th>Delete</th>
+        <th>Update</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        {% for i in user %}
+        <tr class="tableRow">
+        <td>{{i.username}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.sent_mails}}</td>
+        <td>{{i.activity_time}}</td>
+        <td><span class="status-inactive">{{i.is_active}}</span></td>
+        <td><a class="btn btn-link p-0" onclick='deleteuser({{i.id}},this)'>🗑️</a></td>
+        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{i.id}}">update</button></td>
+        <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="update/{{i.id}}/">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            <input style="border: none;" type="text" name="username" class="form-control"
+                            value="{{ i.username }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            <input style="border: none;" type="text" name="email" class="form-control"
+                            value="{{ i.email }}"> 
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_sent_mails" class="form-label">Sent Mails</label>
+                            <input style="border: none;" type="text" name="sent_mails" class="form-control"
+                            value="{{ i.sent_mails }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_is_active" class="form-label">Active Status</label>
+                            <input style="border: none;" type="text" name="activity_time" class="form-control"
+                            value="{{ i.activity_time }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_activity_time" class="form-label">Activity Time</label>
+                            <input style="border: none;" type="text" name="is_active" class="form-control"
+                            value="{{ i.is_active }}">
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<script>
+    function deleteuser(id,i){
+        fetch('/delete/'+id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{csrf_token}}'
+            },}).then(response =>{
+            if (!response.ok) {
+                throw new Error("can't deleteuser: " + response);
+            }
+            i = i
+                i.style.display = 'none'
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+</script>
+
+{% endblock %}

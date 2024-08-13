@@ -1,0 +1,69 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #0d6efd;
+            height: 100vh;
+            padding: 15px;
+            color: white;
+        }
+        .sidebar h4 {
+            margin-bottom: 30px;
+        }
+        .sidebar .btn {
+            background-color: #343a40;
+            color: white;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .status-active {
+            color: green;
+        }
+        .status-inactive {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <h4>ConnectMore</h4>
+            <a class="btn" href="{% url 'home' %}">Add user</a>
+            <a class="btn" href="{% url 'add-pdf' %}">Add PDF</a>
+            <div class="mt-auto p-3">
+                <p class="mb-0">35 MB / 500.00 MB</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and Popper.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
