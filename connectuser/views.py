@@ -18,7 +18,6 @@ class CurrentUserCreateListView(CreateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["user"] = CurrentUser.objects.all()
-        print(context)
         return context
 
 
