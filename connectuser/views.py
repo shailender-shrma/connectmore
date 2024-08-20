@@ -4,6 +4,9 @@ from django.shortcuts import redirect
 from .models import CurrentUser, Pdf
 from django.views.generic import CreateView
 from .forms import PdfForm
+from rest_framework.generics import ListAPIView, ListCreateAPIView
+from .serailizers import PdfSeriailizer, ConnectUserSeriailizer
+from .pagination import PdfPagination, ConnectUserPagination
 
 # Create your views here.
 
@@ -62,3 +65,19 @@ def delete_pdf(request, id):
         pdf = Pdf.objects.get(id=id)
         pdf.delete()
         return JsonResponse({"status": "Success"})
+
+
+class PdfListApiView(ListAPIView):
+    """view to get list of all pdf"""
+    queryset = Pdf.objects.all().order_by('id')
+    serializer_class = PdfSeriailizer
+    pagination_class = PdfPagination
+
+
+class ConnectUserCreateListApiView(ListCreateAPIView):
+    """view to get list of all users"""
+    model = CurrentUser
+    queryset = CurrentUser.objects.all().order_by('id')
+    serializer_class = ConnectUserSeriailizer
+    pagination_class = ConnectUserPagination
+
