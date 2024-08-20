@@ -86,8 +86,8 @@
     </thead>
     <tbody>
     
-        {% for pdf in pdfs %}
-        <tr class="tableRow">
+    {% for pdf in pdfs %}
+    <tr class="tableRow">
         <td>{{pdf.id}}</td>
         <td>{{pdf.name}}</td>
         <td ><a href='{{pdf.pdf.url}}'  class="btn btn-primary">view</a></td>

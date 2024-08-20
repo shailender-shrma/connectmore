@@ -6,3 +6,8 @@ sqlparse==0.4.4
 python-dotenv
 django-crispy-forms 
 crispy-bootstrap4
+djangorestframework
+markdown
+django-filter
+psycopg
+psycopg-binary
