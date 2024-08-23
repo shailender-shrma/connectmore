@@ -7,7 +7,7 @@ urlpatterns = [
     path("", views.CurrentUserCreateListView.as_view(), name="home"),
     path("delete/<int:id>/", views.currentuser_delete, name="delete-current-user"),
     path(
-        "update/<int:id>/", views.CurrentUserUpdateApiView, name="current-user-update"
+        "update/<int:id>/", views.currenctuserupdateview, name="current-user-update"
     ),
     path("pdfs/", views.PDFCreateListView.as_view(), name="add-pdf"),
     path("delete-pdf/<int:id>/", views.delete_pdf, name="delete-pdf"),

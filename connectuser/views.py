@@ -32,7 +32,7 @@ def currentuser_delete(request, id):
         return JsonResponse({"status": "Success"})
 
 
-def CurrentUserUpdateApiView(request, id):
+def currenctuserupdateview(request, id):
     """view to update existing user"""
     if request.method == "POST":
         user = CurrentUser.objects.get(id=id)
@@ -75,7 +75,7 @@ class PdfListApiView(ListAPIView):
 
 
 class ConnectUserCreateListApiView(ListCreateAPIView):
-    """view to get list of all users"""
+    """APIview to create and get list of all users """
     model = CurrentUser
     queryset = CurrentUser.objects.all().order_by('id')
     serializer_class = ConnectUserSeriailizer
