@@ -37,3 +37,5 @@ Ensure you have the following installed on your machine:
    
 The application should be accessible at http://localhost:8000.
 
+
+if you're an issue please and .env file and neccessary credential in order to run project
